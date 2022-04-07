@@ -566,7 +566,8 @@ q_emiTeMkt(t,regi,emiTe(enty),emiMkt)..
 *** substract carbon in feedstocks from biogenic or synthetic origin, generates negative emissions
   - sum( entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt),
       sum( se2fe(entySe, entyFe, te)$(entySeBio(entySe) OR entySeSyn(entySe)),
-        vm_FeedstocksCarbon(t,regi,entySe,entyFe,emiMkt)
+*stupid workaround to test what happens when this variable is not considered without fixing reporting in remind2        
+        vm_FeedstocksCarbon(t,regi,entySe,entyFe,emiMkt) - vm_FeedstocksCarbon(t,regi,entySe,entyFe,emiMkt)
     )
   )$( sameas(enty,"co2") )    
 ***   LP, Valve from cco2 capture step, to mangage if capture capacity and CCU/CCS capacity don't have the same lifetime
