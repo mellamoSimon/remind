@@ -152,12 +152,13 @@ q37_chemicals_feedstocks_limit(t,regi)$( t.val ge cm_startyear ) ..
 *Flow of non-energy feedstocks. It is used for emissions accounting 
 q37_demFeFeedstockChemIndst(ttot,regi,entyFe,emiMkt)$(    ttot.val ge cm_startyear 
                                                       AND entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt) ) .. 
- 
+*don't use sum to fix to 0 
   sum(se2fe(entySE,entyFE,te),
 
     vm_demFENonEnergySector(ttot,regi,entySE,entyFE,"indst",emiMkt)
   )
   =e=
+*set to 0 to deactivate
   sum((fe2ppfEN(entyFE,ppfen_industry_dyn37(in)),              
        secInd37_emiMkt(secInd37,emiMkt),secInd37_2_pf(secInd37,in_chemicals_37(in))), 
        
@@ -176,11 +177,13 @@ q37_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_N
   vm_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)
   =e=
   vm_demFENonEnergySector(ttot,regi,entySe,entyFe,"indst",emiMkt)
-    * p37_FeedstockCarbonContent(ttot,regi,entyFe);
+    * p37_FeedstockCarbonContent(ttot,regi,entyFe)
+ ;
 ;
 
 
 *** in baseline runs, all industrial feedstocks should come from fossil energy carriers, no biofuels or synfuels
+*comment this when setting to 0
 q37_FossilFeedstock_Base(t,regi,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
                                               AND cm_emiscen eq 1)..
   sum(entySE,

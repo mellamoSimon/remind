@@ -95,6 +95,7 @@ q02_inconvPenNonEnSwitch(ttot,regi,entySe,entyFe,te,sector,emiMkt)$((ttot.val ge
                                                             AND (entySeBio(entySe) 
                                                               OR entySeSyn(entySe) ) )..
                                                               vm_demFENonEnergySector(ttot,regi,entySe,entyFe,sector,emiMkt) 
+*comment these 2 lines when setting to 0
                                                               - vm_demFENonEnergySector(ttot-1,regi,entySe,entyFe,sector,emiMkt)
                                                               + v02_NegInconvPenNonEnSwitch(ttot,regi,entySe,entyFe,sector,emiMkt)
                                                               - v02_PosInconvPenNonEnSwitch(ttot,regi,entySe,entyFe,sector,emiMkt)
