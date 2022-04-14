@@ -21,7 +21,8 @@ v39_shSynGas(ttot,all_regi)                                          "Share of s
 
 equations
 q39_emiCCU(ttot,all_regi,all_te)                                        "calculate CCU emissions"
-q39_emiCCUlongShort()                                                   "Balance short- and long-term CCU"
+q39_emiCCUlongShort(ttot,all_regi)                                      "balance short- and long-term CCU"
+q39_emiCCUlong(ttot,all_regi)                                           "calculate CO2 flow for long-term CCU"
 q39_shSynTrans(ttot,all_regi)                                           "Define share of of synthetic liquids in all SE liquids."
 q39_shSynGas(ttot,all_regi)                                             "Define share of of synthetic gas in all SE gases."
 ;
