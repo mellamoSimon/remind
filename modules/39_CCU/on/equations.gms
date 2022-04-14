@@ -12,7 +12,8 @@
 
 q39_emiCCU(t,regi,te)$(te_ccu39(te)).. 
   sum(teCCU2rlf(te,rlf),
-    vm_co2CCUshort(t,regi,"cco2","ccuco2short",te,rlf)
+*later, this variable could contain CCU for cement curing and other applications appart from synfuels
+    vm_co2CCU(t,regi,"cco2","ccuco2short",te,rlf)
   )
   =e=
   sum(se2se_ccu39(enty,enty2,te), 
@@ -21,6 +22,18 @@ q39_emiCCU(t,regi,te)$(te_ccu39(te))..
   )
 ;
 
+*' Calculate share of CCU flows that go to long-term applications
+q39_emiCCUlong()..
+vm_co2CCUlong(t,regi,enty,enty2,te,rlf) 
+  =e=
+  p39_CCUlongShare(t,regi)*vm_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)
+;
+
+*' Balance CCU flows
+q39_emiCCUlongShort()..
+vm_co2CCU() 
+  =e=
+  vm_co2CCUshort() + vm_co2CCUlong();
 
 *' Adjust the shares of synfuels in transport liquids.
 *' This equation is only effective when CCU is switched on.

@@ -8,9 +8,12 @@
 
 parameters
 p39_co2_dem(ttot,all_regi,all_enty,all_enty,all_te)					"CO2 demand of CCU technologies, unit: tC/TWa(output)"
+p39_CCUlongShare(ttot,all_regi)                                     "share of CCU-CO2 going to long-living applications"
 ;
 
 positive variables
+vm_co2CCU(ttot,all_regi,all_enty,all_enty,all_te,rlf)                "Total CO2 for CCU. Synfuels only (for now). Unit GtC/a"
+vm_co2CCUlong(ttot,all_regi,all_enty,all_enty,all_te,rlf)            "CO2 sequestered in long-lived products. Unit GtC/a"
 vm_co2CCUshort(ttot,all_regi,all_enty,all_enty,all_te,rlf)           "CO2 captured in CCU te that have a persistence for co2 storage shorter than 5 years. Unit GtC/a"
 v39_shSynTrans(ttot,all_regi)                                        "Share of synthetic liquids in all SE liquids. Value between 0 and 1."
 v39_shSynGas(ttot,all_regi)                                          "Share of synthetic gas in all SE gases. Value between 0 and 1."
@@ -18,6 +21,7 @@ v39_shSynGas(ttot,all_regi)                                          "Share of s
 
 equations
 q39_emiCCU(ttot,all_regi,all_te)                                        "calculate CCU emissions"
+q39_emiCCUlongShort()                                                   "Balance short- and long-term CCU"
 q39_shSynTrans(ttot,all_regi)                                           "Define share of of synthetic liquids in all SE liquids."
 q39_shSynGas(ttot,all_regi)                                             "Define share of of synthetic gas in all SE gases."
 ;
