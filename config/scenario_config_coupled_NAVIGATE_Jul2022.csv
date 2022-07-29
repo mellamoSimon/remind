@@ -1,0 +1,15 @@
+title;start;oldrun;path_report;qos;magpie_scen;no_ghgprices_land_until;cm_nash_autoconverge_lastrun;path_gdx;path_gdx_ref;path_gdx_bau;path_gdx_opt
+Base;1;;;priority;SSP2|NPI;y2150;;;;;
+Base_LMD;1;;;short;SSP2|NPI;y2150;;;;;
+NAV_Ind_NDC;1;;;short;SSP2|NDC;y2150;;;;;
+NAV_Ind_NDC_LMD;1;;;short;SSP2|NDC;y2150;;;;;
+NAV_Ind_Npi;1;;;short;SSP2|NPI;y2150;;;;;
+NAV_Ind_Npi_LMD;1;;;short;SSP2|NPI;y2150;;;;;
+NAV_Ind_650;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_1150;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_Elec650;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_Elec1150;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_Comb650;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_Comb1150;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_LMD650;1;;;short;SSP2|NDC;y2020;;;;;
+NAV_Ind_LMD1150;1;;;short;SSP2|NDC;y2020;;;;;
