@@ -8,6 +8,7 @@
 library(magclass)
 
 #library(remind2)
+
 library(devtools)
 load_all("/p/tmp/simonlei/this-is-remind2/remind2")
 

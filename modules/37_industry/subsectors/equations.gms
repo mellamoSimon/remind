@@ -11,11 +11,10 @@ q37_demFeIndst(ttot,regi,entyFe,emiMkt)$(    ttot.val ge cm_startyear
                                          AND entyFe2Sector(entyFe,"indst") ) ..
   sum(se2fe(entySE,entyFE,te),
     vm_demFEsector(ttot,regi,entySE,entyFE,"indst",emiMkt)
+    +
+    vm_demFErecyclingSavings(ttot,regi,entySe,entyFe,"indst",emiMkt)
   )
-*** substract chemical feedstocks which are supplied by vm_demFENonEnergySector (see q37_demFeFeedstockChemIndst)
-*  - sum(se2fe(entySE,entyFE,te),
-*    vm_demFENonEnergySector(ttot,regi,entySE,entyFE,"indst",emiMkt)
-*    )
+
   =e=
   sum((fe2ppfEN(entyFE,ppfen_industry_dyn37(in)),
        secInd37_emiMkt(secInd37,emiMkt),secInd37_2_pf(secInd37,in)),
@@ -23,15 +22,6 @@ q37_demFeIndst(ttot,regi,entyFe,emiMkt)$(    ttot.val ge cm_startyear
   + pm_cesdata(ttot,regi,in,"offset_quantity")
   )
 
-*** substract chemical feedstocks which are supplied by vm_demFENonEnergySector (see q37_demFeFeedstockChemIndst)
-*  -   sum((fe2ppfEN(entyFE,ppfen_industry_dyn37(in)),              
-*       secInd37_emiMkt(secInd37,emiMkt),secInd37_2_pf(secInd37,in_chemicals_37(in))), 
-       
-*      ( vm_cesIO(ttot,regi,in) 
-*      + pm_cesdata(ttot,regi,in,"offset_quantity")
-*      )
-*      * p37_chemicals_feedstock_share(ttot,regi)
-*      )
 ;
 
 *' Thermodynamic limits on subsector energy demand
@@ -199,7 +189,6 @@ q37_feedstocksLimit(ttot,regi,entySE,entyFE,emiMkt)$(ttot.val ge cm_startyear
   
 ;
 
-
 *** calculate carbon contained in chemical feedstocks
 q37_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
                                                       AND entySe2entyFe(entySe,entyFe)  ) .. 
@@ -208,7 +197,32 @@ q37_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_N
   vm_demFENonEnergySector(ttot,regi,entySe,entyFe,"indst",emiMkt)
     * p37_FeedstockCarbonContent(ttot,regi,entyFe);
 ;
+*** calculate carbon content of recycled plastics (solvents, additives and explosives are neglected)
+q37_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)$(restrict sets!)..
+  vm_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)
+  =e=
+  vm_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)
+  #one static value for now. To be read in mrremind from WorldBank database on wate (after (quite some)processing)
+  * p37_RecyclingRate(ttot,regi);
 
+*** calculate avoided/saved feedstocks in the chemicals subsectors due to recycling (in energy units)
+q37_demFErecyclingSavings(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
+                                                      AND entySe2entyFe(entySe,entyFe)  ) .. 
+  vm_demFErecyclingSavings(ttot,regi,entySe,entyFe,"indst",emiMkt)
+  =e=
+  vm_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)
+  / p37_FeedstockCarbonContent(ttot,regi,entyFe)
+;
+
+*** carbon contained in plastics that are not recycled
+*this flow will be separated further when more end-of-life alternatives are considered
+*USE THIS FLOW TO DISCOUNT EMISSIONS IN CORE!!!
+q37_nonRecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)$(restrict sets!)..
+
+  vm_notRecycledCarbonContent(ttot,regi,entySe,entyFe,emiMkt)
+  =e=
+  * (1 - p37_RecyclingRate(ttot,regi))
+  ;
 
 *** in baseline runs, all industrial feedstocks should come from fossil energy carriers, no biofuels or synfuels
 q37_FossilFeedstock_Base(t,regi,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)

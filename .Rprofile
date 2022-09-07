@@ -62,4 +62,5 @@ if (any(grepl("^00LOCK.*", list.files(.libPaths())))) {
   activateSnapshot(latestSnapshot)
 }
 
+
 })
