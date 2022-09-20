@@ -197,32 +197,6 @@ q37_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_N
   vm_demFENonEnergySector(ttot,regi,entySe,entyFe,"indst",emiMkt)
     * p37_FeedstockCarbonContent(ttot,regi,entyFe);
 ;
-*** calculate carbon content of recycled plastics (solvents, additives and explosives are neglected)
-q37_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)$(restrict sets!)..
-  vm_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)
-  =e=
-  vm_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)
-  #one static value for now. To be read in mrremind from WorldBank database on wate (after (quite some)processing)
-  * p37_RecyclingRate(ttot,regi);
-
-*** calculate avoided/saved feedstocks in the chemicals subsectors due to recycling (in energy units)
-q37_demFErecyclingSavings(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
-                                                      AND entySe2entyFe(entySe,entyFe)  ) .. 
-  vm_demFErecyclingSavings(ttot,regi,entySe,entyFe,"indst",emiMkt)
-  =e=
-  vm_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)
-  / p37_FeedstockCarbonContent(ttot,regi,entyFe)
-;
-
-*** carbon contained in plastics that are not recycled
-*this flow will be separated further when more end-of-life alternatives are considered
-*USE THIS FLOW TO DISCOUNT EMISSIONS IN CORE!!!
-q37_nonRecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)$(restrict sets!)..
-
-  vm_notRecycledCarbonContent(ttot,regi,entySe,entyFe,emiMkt)
-  =e=
-  * (1 - p37_RecyclingRate(ttot,regi))
-  ;
 
 *** in baseline runs, all industrial feedstocks should come from fossil energy carriers, no biofuels or synfuels
 q37_FossilFeedstock_Base(t,regi,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
@@ -234,5 +208,57 @@ q37_FossilFeedstock_Base(t,regi,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyF
     vm_demFENonEnergySector(t,regi,entySE,entyFE,"indst",emiMkt))
 ;
 
+***---------------------------------------------------------------------------
+*' Plastics balances
+***---------------------------------------------------------------------------
+
+*** calculate carbon content in plastics using an estimate for the share of
+*** feedstocks that are converted into plastics.(discount solvents, additives and explosives)
+q37_plasticsShare(ttot,regi,entySe,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
+                                                      AND entySe2entyFe(entySe,entyFe))..
+  vm_PlasticsCarbon(ttot,regi,entySe,entyFe,emiMkt)
+  =e=
+  vm_FeedstocksCarbon(ttot,regi,entySe,entyFe,emiMkt)
+*'hardcoded for testing. FIX ME
+  *0.75
+*'one static value for now
+*'  * p37_PlasticsShare(ttot,regi)
+;
+
+*** calculate carbon content of recycled plastics 
+q37_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
+                                                      AND entySe2entyFe(entySe,entyFe))..
+  vm_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)
+  =e=
+  vm_PlasticsCarbon(ttot,regi,entySe,entyFe,emiMkt)
+*one static value for now. To be read in mrremind from WorldBank database on wate (after (quite some)processing)
+*'hardcoded for testing. FIX ME
+  *0.5
+*'  * p37_RecyclingRate(ttot,regi)
+;
+
+*** calculate avoided/saved feedstocks in the chemicals subsectors due to recycling (in energy units)
+q37_demFErecyclingSavings(ttot,regi,entySe,entyFe,emiMkt)$(    entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
+                                                      AND entySe2entyFe(entySe,entyFe)  ) .. 
+
+  vm_demFErecyclingSavings(ttot,regi,entySe,entyFe,"indst",emiMkt)
+  =e=
+  vm_RecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)
+  / p37_FeedstockCarbonContent(ttot,regi,entyFe)
+;
+
+*** carbon contained in plastics that are not recycled
+*this flow will be separated further when more end-of-life alternatives are considered
+*USE THIS FLOW TO DISCOUNT EMISSIONS IN CORE!!!
+q37_nonRecycledCarbon(ttot,regi,entySe,entyFe,emiMkt)$(entyFe2sector2emiMkt_NonEn(entyFe,"indst",emiMkt)
+                                                      AND entySe2entyFe(entySe,entyFe))..
+
+  vm_notRecycledCarbonContent(ttot,regi,entySe,entyFe,emiMkt)
+  =e=
+  vm_PlasticsCarbon(ttot,regi,entySe,entyFe,emiMkt)
+*'hardcoded for testing. FIX ME
+  *0.5
+*' * (1 - p37_RecyclingRate(ttot,regi))
+  ;
 
 *** EOF ./modules/37_industry/subsectors/equations.gms

@@ -2110,7 +2110,7 @@ macSector2emiMkt(all_enty,all_emiMkt)  "mapping mac sectors to emission markets"
         co2cement_process.ETS
 /
 
-entyFe2sector2emiMkt_NonEn(all_enty,emi_sectors,all_emiMkt)                     "combinations of FE type, sector and emissions markets existing for FE non-energy use"
+entyFe2sector2emiMkt_NonEn(all_enty,emi_sectors,all_emiMkt)      "combinations of FE type, sector and emissions markets existing for FE non-energy use"
 /
         fesos.indst.ETS
         fehos.indst.ETS

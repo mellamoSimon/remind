@@ -74,7 +74,12 @@ Equations
   q37_demFeFeedstockChemIndst(ttot,all_regi,all_enty,all_emiMkt)    "defines energy flow of non-energy feedstocks for the chemicals industry. It is used for emissions accounting"
   q37_FossilFeedstock_Base(ttot,all_regi,all_enty,all_emiMkt)       "in baseline runs feedstocks only come from fossil energy carriers"
   q37_FeedstocksCarbon(ttot,all_regi,all_enty,all_enty,all_emiMkt)  "calculate carbon contained in feedstocks [GtC]"
-  q37_feedstocksLimit(ttot,all_regi,all_enty,all_enty,all_emiMkt)            "restrict feedstocks flow to total energy flows into industry"
+  q37_feedstocksLimit(ttot,all_regi,all_enty,all_enty,all_emiMkt)   "restrict feedstocks flow to total energy flows into industry"
+
+  q37_plasticsShare(ttot,all_regi,all_enty,all_enty,all_emiMkt)                 "calculate carbon content in plastics"
+  q37_RecycledCarbon(ttot,all_regi,all_enty,all_enty,all_emiMkt)                "calculate carbon content of recycled plastics"
+  q37_demFErecyclingSavings(ttot,all_regi,all_enty,all_enty,all_emiMkt)         "avoided/saved feedstocks in the chemicals subsectors due to recycling (in energy units)"
+  q37_nonRecycledCarbon(ttot,all_regi,all_enty,all_enty,all_emiMkt)             "carbon contained in plastics that are not recycled"
 ;
 
 *** EOF ./modules/37_industry/subsectors/declarations.gms

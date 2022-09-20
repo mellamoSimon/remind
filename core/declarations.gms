@@ -347,8 +347,11 @@ vm_prodPe(ttot,all_regi,all_enty)                    "pe production. [TWa, Urani
 vm_demSe(ttot,all_regi,all_enty,all_enty,all_te)     "se demand. [TWa]"
 vm_prodSe(tall,all_regi,all_enty,all_enty,all_te)    "se production. [TWa]"
 vm_prodFe(ttot,all_regi,all_enty,all_enty,all_te)    "fe production. [TWa]"
-vm_demFeSector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt)          "fe demand per sector and emission market. [TWa]"
-vm_demFENonEnergySector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "energy flows of non-energy feedstocks [TWa]"
+vm_demFeSector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt)            "fe demand per sector and emission market. [TWa]"
+
+vm_demFENonEnergySector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt)   "energy flows of non-energy feedstocks [TWa]"
+vm_demFErecyclingSavings(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt)  "savings in non-energy feedstocks due to recycling [TWa]"
+
 v_costFu(ttot,all_regi)                              "fuel costs"
 vm_costFuEx(ttot,all_regi,all_enty)                  "fuel costs from exhaustible energy [tril$US]"
 vm_pebiolc_price(ttot,all_regi)                      "Bioenergy price according to MAgPIE supply curves [T$US/TWa]"
@@ -379,7 +382,11 @@ v_shGasLiq_fe(ttot,all_regi,emi_sectors)             "share of gases and liquids
 
 vm_emiCdrAll(ttot,all_regi)                          "all CDR emissions"
 
+*'Carbon flows in industry products
 vm_FeedstocksCarbon(ttot,all_regi,all_enty,all_enty,all_emiMkt)     "carbon contained in chemical feedstocks [GtC]"
+vm_PlasticsCarbon(ttot,all_regi,all_enty,all_enty,all_emiMkt)                   "carbon contained in plastics [GtC]"
+vm_RecycledCarbon(ttot,all_regi,all_enty,all_enty,all_emiMkt)                   "carbon contained in recycled plastics [GtC]"
+vm_notRecycledCarbonContent(ttot,all_regi,all_enty,all_enty,all_emiMkt)         "carbon contained in plastics that are not recycled [GtC]"
 
 *** ES layer variables
 vm_demFeForEs(ttot,all_regi,all_enty,all_esty,all_teEs)     "Final energy which will be used in the ES layer."
