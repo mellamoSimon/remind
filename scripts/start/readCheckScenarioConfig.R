@@ -34,6 +34,10 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
             paste0(rownames(scenConf)[regionname], collapse = ", "),
             " – Titles with three capital letters or 'glob' may be confused with region names by magclass. Stopping now.")
   }
+  nameisNA <- grepl("^NA$", rownames(scenConf))
+  if (any(nameisNA)) {
+    warning("Do not use 'NA' as scenario name, you fool. Stopping now.")
+  }
   illegalchars <- grepl("[^[:alnum:]_-]", rownames(scenConf))
   if (any(illegalchars)) {
     warning("These titles contain illegal characters: ",
@@ -51,12 +55,6 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
       whitespaceErrors <- whitespaceErrors + sum(haswhitespace)
     }
   }
-  if ("path_gdx_ref" %in% names(scenConf) && ! "path_gdx_refpolicycost" %in% names(scenConf)) {
-    scenConf$path_gdx_refpolicycost <- scenConf$path_gdx_ref
-    message("In ", filename,
-        ", no column path_gdx_refpolicycost for policy cost comparison found, using path_gdx_ref instead.")
-  }
-  scenConf[, names(path_gdx_list)[! names(path_gdx_list) %in% names(scenConf)]] <- NA
 
   # fill empty cells with values from scenario written in copyConfigFrom cell
   copyConfigFromErrors <- 0
@@ -72,7 +70,38 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
     }
   }
 
-  errorsfound <- sum(toolong) + sum(regionname) + sum(illegalchars) + whitespaceErrors + copyConfigFromErrors
+  pathgdxerrors <- 0
+  # fix missing path_gdx and inconsistencies
+  if ("path_gdx_ref" %in% names(scenConf) && ! "path_gdx_refpolicycost" %in% names(scenConf)) {
+    scenConf$path_gdx_refpolicycost <- scenConf$path_gdx_ref
+    msg <- paste0("In ", filename,
+        ", no column path_gdx_refpolicycost for policy cost comparison found, using path_gdx_ref instead.")
+    message(msg)
+  }
+  if ("path_gdx_bau" %in% names(scenConf)) {
+    # fix if bau given despite not needed
+    NDC45 <- if ("carbonprice" %in% names(scenConf)) scenConf$carbonprice %in% "NDC" else FALSE
+    NDC46 <- if ("carbonpriceRegi" %in% names(scenConf)) scenConf$carbonpriceRegi %in% "NDC" else FALSE
+    noNDCbutBAU <- ! is.na(scenConf$path_gdx_bau) & ! (NDC45 | NDC46)
+    if (sum(noNDCbutBAU) > 0) {
+      msg <- paste0("In ", sum(noNDCbutBAU), " scenarios, neither 'carbonprice' nor 'carbonpriceRegi' is set to 'NDC', but 'path_gdx_bau' is not empty.\n",
+                    "To avoid unnecessary dependencies to other runs, setting 'path_gdx_bau' to NA.")
+      message(msg)
+      scenConf$path_gdx_bau[noNDCbutBAU] <- NA
+    }
+    # fail if bau not given but needed
+    noBAUbutNDC <- is.na(scenConf$path_gdx_bau) & (NDC45 | NDC46)
+    if (sum(noBAUbutNDC) > 0) {
+      pathgdxerrors <- pathgdxerrors + sum(noBAUbutNDC)
+      warning("In ", sum(noBAUbutNDC), " scenarios, 'carbonprice' or 'carbonpriceRegi' is set to 'NDC' ",
+              "which requires a reference gdx in 'path_gdx_bau', but it is empty.")
+    }
+  }
+  # make sure every path gdx column exists
+  scenConf[, names(path_gdx_list)[! names(path_gdx_list) %in% names(scenConf)]] <- NA
+
+  # collect errors
+  errorsfound <- sum(toolong) + sum(regionname) + sum(nameisNA) + sum(illegalchars) + whitespaceErrors + copyConfigFromErrors + pathgdxerrors
 
   # check column names
   knownColumnNames <- c(names(cfg$gms), names(path_gdx_list), "start", "output", "description", "model",
@@ -115,8 +144,9 @@ readCheckScenarioConfig <- function(filename, remindPath = ".", testmode = FALSE
        "cm_BioImportTax_EU" = "Use more flexible cm_import_tax switch instead, see https://github.com/remindmodel/remind/issues/1157",
        "cm_trdcst" = "Now always fixed to 1.5, see https://github.com/remindmodel/remind/pull/1052",
        "cm_trdadj" = "Now always fixed to 2, see https://github.com/remindmodel/remind/pull/1052",
-       "cm_OILRETIRE" = "Now always on by default, see https://github.com/remindmodel/remind/pull/1102"
-     )
+       "cm_OILRETIRE" = "Now always on by default, see https://github.com/remindmodel/remind/pull/1102",
+       "cm_fixCO2price" = "Was never in use, removed in https://github.com/remindmodel/remind/pull/1369",
+     NULL)
     for (i in intersect(names(forbiddenColumnNames), unknownColumnNames)) {
       if (testmode) {
         warning("Column name ", i, " in remind settings is outdated. ", forbiddenColumnNames[i])

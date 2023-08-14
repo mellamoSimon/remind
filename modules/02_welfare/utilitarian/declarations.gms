@@ -41,8 +41,8 @@ v02_sesoInconvPenSlack(ttot,all_regi)             "Slack to avoid negative incon
 $endif.inconv
 ;
 
-positive variables
 $IFTHEN.INCONV_bioSwitch "%cm_INCONV_PENALTY_FESwitch%" == "on"
+positive variables
 v02_NegInconvPenFeBioSwitch(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "Negative inconvenience penalty in the welfare function for bio/synfuel shares switch between sectors and emissions markets"
 v02_PosInconvPenFeBioSwitch(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "Positive inconvenience penalty in the welfare function for bio/synfuel shares switch between sectors and emissions markets"
 $ENDIF.INCONV_bioSwitch
@@ -50,6 +50,7 @@ $ENDIF.INCONV_bioSwitch
 v02_NegInconvPenNonEnSwitch(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "Negative inconvenience penalty in the welfare function for fuel switching between biomass/synfuel in non-energy use"
 v02_PosInconvPenNonEnSwitch(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "Positive inconvenience penalty in the welfare function for fuel switching between biomass/synfuel in non-energy use"
 ;
+
 
 ***-------------------------------------------------------------------------------
 ***                                   EQUATIONS
